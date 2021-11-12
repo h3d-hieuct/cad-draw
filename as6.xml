@@ -1,0 +1,71 @@
+<SchemeXml>
+  <HouseType>
+    <Rooms>
+      <Room roomUID="2" name="Chưa đặt tên" innerPath="4457,3975|4457,4373|4059,4373|4059,4225|4185,4225|4185,3975" wallsUid="14,22,20,25,23,12">
+        <InnerPoints value="9140,500|9140,-7460|1180,-7460|1180,-4500|3700,-4500|3700,500"/>
+      </Room>
+      <Room roomUID="3" name="Chưa đặt tên" innerPath="4050,4216|3778,4216|3778,3818|4176,3818|4176,3966|4050,3966" wallsUid="26,28,17,19,6,9">
+        <InnerPoints value="1000,-4320|-4440,-4320|-4440,3640|3520,3640|3520,680|1000,680"/>
+      </Room>
+      <Room roomUID="4" name="Chưa đặt tên" innerPath="4056,3972|4179,3972|4179,4219|4056,4219" wallsUid="17,28,25,20">
+        <InnerPoints value="1120,560|3580,560|3580,-4380|1120,-4380"/>
+      </Room>
+    </Rooms>
+    <Walls>
+      <Wall wallUID="6" wallThick="240" wallHeight="2800" wallLength="8200" startPoint="-4560,3760" endPoint="3640,3760" points="-4440,3640|3520,3640|3760,3880|-4680,3880" isBearingWall="true"/>
+      <Wall wallUID="9" wallThick="240" wallHeight="2800" wallLength="8200" startPoint="-4560,-4440" endPoint="-4560,3760" points="-4440,-4320|-4440,3640|-4680,3880|-4680,-4560" isBearingWall="true"/>
+      <Wall wallUID="12" wallThick="240" wallHeight="2800" wallLength="8200" startPoint="9260,-7580" endPoint="1060,-7580" points="9140,-7460|1180,-7460|940,-7700|9380,-7700" isBearingWall="true"/>
+      <Wall wallUID="14" wallThick="240" wallHeight="2800" wallLength="8200" startPoint="9260,620" endPoint="9260,-7580" points="9140,500|9140,-7460|9380,-7700|9380,740" isBearingWall="true"/>
+      <Wall wallUID="19" wallThick="240" wallHeight="2800" wallLength="3140" startPoint="3640,3760" endPoint="3640,620" points="3520,3640|3520,680|3760,740|3760,3880" isBearingWall="true"/>
+      <Wall wallUID="20" wallThick="120" wallHeight="2800" wallLength="5060" startPoint="3640,620" endPoint="3640,-4440" points="3580,560|3580,-4380|3700,-4500|3700,500" isBearingWall="true"/>
+      <Wall wallUID="17" wallThick="120" wallHeight="2800" wallLength="2580" startPoint="1060,620" endPoint="3640,620" points="1120,560|3580,560|3520,680|1000,680" isBearingWall="true"/>
+      <Wall wallUID="22" wallThick="240" wallHeight="2800" wallLength="5620" startPoint="3640,620" endPoint="9260,620" points="3700,500|9140,500|9380,740|3760,740" isBearingWall="true"/>
+      <Wall wallUID="25" wallThick="120" wallHeight="2800" wallLength="2580" startPoint="3640,-4440" endPoint="1060,-4440" points="3580,-4380|1120,-4380|1180,-4500|3700,-4500" isBearingWall="true"/>
+      <Wall wallUID="26" wallThick="240" wallHeight="2800" wallLength="5620" startPoint="1060,-4440" endPoint="-4560,-4440" points="1000,-4320|-4440,-4320|-4680,-4560|940,-4560" isBearingWall="true"/>
+      <Wall wallUID="23" wallThick="240" wallHeight="2800" wallLength="3140" startPoint="1060,-7580" endPoint="1060,-4440" points="1180,-7460|1180,-4500|940,-4560|940,-7700" isBearingWall="true"/>
+      <Wall wallUID="28" wallThick="120" wallHeight="2800" wallLength="5060" startPoint="1060,-4440" endPoint="1060,620" points="1120,-4380|1120,560|1000,680|1000,-4320" isBearingWall="true"/>
+    </Walls>
+    <InWallDatas/>
+    <CuboidModelDatas/>
+    <Compass angle="0"/>
+  </HouseType>
+  <Furniture/>
+  <WallpaperPaintInfo desc="centerX and centerZ are the X-axis and Z-axis coordinates of the center point of the area, and width and hight are the width and height of the area, respectively, in centimeters">
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="2" wallId="14" Height3D="280" centerPos="9140.00,-3480.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="2" wallId="12" Height3D="280" centerPos="5160.00,-7460.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="2" wallId="23" Height3D="280" centerPos="1180.00,-5980.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="2" wallId="25" Height3D="280" centerPos="2440.00,-4500.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="2" wallId="20" Height3D="280" centerPos="3700.00,-2000.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="2" wallId="22" Height3D="280" centerPos="6420.00,500.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="2" wallId="" Floor="1" Height3D="100" centerPos=""/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="2" wallId="" Ceiling="1" Height3D="100" centerPos="50.00,50.00,50,500.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="3" wallId="26" Height3D="280" centerPos="-1720.00,-4320.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="3" wallId="9" Height3D="280" centerPos="-4440.00,-340.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="3" wallId="6" Height3D="280" centerPos="-460.00,3640.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="3" wallId="19" Height3D="280" centerPos="3520.00,2160.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="3" wallId="17" Height3D="280" centerPos="2260.00,680.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="3" wallId="28" Height3D="280" centerPos="1000.00,-1820.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="3" wallId="" Floor="1" Height3D="100" centerPos=""/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="3" wallId="" Ceiling="1" Height3D="100" centerPos="50.00,50.00,50,500.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="4" wallId="17" Height3D="280" centerPos="2350.00,560.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="4" wallId="20" Height3D="280" centerPos="3580.00,-1910.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="4" wallId="25" Height3D="280" centerPos="2350.00,-4380.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="4" wallId="28" Height3D="280" centerPos="1120.00,-1910.00,0,1400.0000"/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="4" wallId="" Floor="1" Height3D="100" centerPos=""/>
+    <WallpaperPaintData RoomName="Chưa đặt tên" RoomID="4" wallId="" Ceiling="1" Height3D="100" centerPos="50.00,50.00,50,500.0000"/>
+  </WallpaperPaintInfo>
+  <Ceiling>
+    <CArea roomId="3" ceilingType="ceiling" points="1000.00,-680.00,0,0.0000|3520.00,-680.00,0,0.0000|3520.00,-3640.00,0,0.0000|-4440.00,-3640.00,0,0.0000|-4440.00,4320.00,0,0.0000|1000.00,4320.00,0,0.0000" topDis="400">
+      <CArea ceilingType="ceiling" points="-1383.82,1234.44,0,0.0000|-1533.62,974.96,0,0.0000|-1763.14,782.37,0,0.0000|-2044.69,679.90,0,0.0000|-2344.31,679.90,0,0.0000|-2625.86,782.37,0,0.0000|-2855.38,974.96,0,0.0000|-3005.18,1234.44,0,0.0000|-3057.21,1529.50,0,0.0000|-3005.18,1824.56,0,0.0000|-2855.38,2084.04,0,0.0000|-2625.86,2276.63,0,0.0000|-2344.31,2379.10,0,0.0000|-2044.69,2379.10,0,0.0000|-1763.14,2276.63,0,0.0000|-1533.62,2084.04,0,0.0000|-1383.82,1824.56,0,0.0000|-1331.79,1529.50,0,0.0000" topDis="400"/>
+    </CArea>
+    <CArea roomId="3" ceilingType="wall" points="7960.00,2800.00,0,0.0000|7960.00,0.00,0,0.0000|0.00,0.00,0,0.0000|0.00,2800.00,0,0.0000" topDis="10" wallUIDs="6">
+      <CArea ceilingType="wall" points="6089.00,1742.50,0,0.0000|6089.00,861.50,0,0.0000|2801.00,861.50,0,0.0000|2801.00,1742.50,0,0.0000" topDis="10"/>
+    </CArea>
+    <CArea roomId="2" ceilingType="ceiling" points="3700.00,-500.00,0,0.0000|3700.00,4500.00,0,0.0000|1180.00,4500.00,0,0.0000|1180.00,7460.00,0,0.0000|9140.00,7460.00,0,0.0000|9140.00,-500.00,0,0.0000" topDis="400">
+      <CArea ceilingType="ceiling" points="7604.50,5676.99,0,0.0000|7450.66,5410.53,0,0.0000|7214.97,5212.76,0,0.0000|6925.84,5107.53,0,0.0000|6618.16,5107.53,0,0.0000|6329.03,5212.76,0,0.0000|6093.34,5410.53,0,0.0000|5939.50,5676.99,0,0.0000|5886.07,5980.00,0,0.0000|5939.50,6283.01,0,0.0000|6093.34,6549.47,0,0.0000|6329.03,6747.24,0,0.0000|6618.16,6852.47,0,0.0000|6925.84,6852.47,0,0.0000|7214.97,6747.24,0,0.0000|7450.66,6549.47,0,0.0000|7604.50,6283.01,0,0.0000|7657.93,5980.00,0,0.0000" topDis="400"/>
+    </CArea>
+    <CArea roomId="2" ceilingType="wall" points="2520.00,2800.00,0,0.0000|2520.00,0.00,0,0.0000|0.00,0.00,0,0.0000|0.00,2800.00,0,0.0000" topDis="10" wallUIDs="25">
+      <CArea ceilingType="wall" points="1666.89,1684.91,0,0.0000|1591.70,1554.67,0,0.0000|1476.50,1458.01,0,0.0000|1335.19,1406.58,0,0.0000|1184.81,1406.58,0,0.0000|1043.50,1458.01,0,0.0000|928.30,1554.67,0,0.0000|853.11,1684.91,0,0.0000|827.00,1833.00,0,0.0000|853.11,1981.09,0,0.0000|928.30,2111.33,0,0.0000|1043.50,2207.99,0,0.0000|1184.81,2259.42,0,0.0000|1335.19,2259.42,0,0.0000|1476.50,2207.99,0,0.0000|1591.70,2111.33,0,0.0000|1666.89,1981.09,0,0.0000|1693.00,1833.00,0,0.0000" topDis="10"/>
+    </CArea>
+  </Ceiling>
+</SchemeXml>
