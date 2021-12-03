@@ -1,7 +1,7 @@
 # 2021-10-28 - hieuhihi
 import ezdxf
 
-from ancuong import calculator
+import calculator
 
 cakeDim = []
 def draw_dim(msp, points, distance=-120, textHeight=100, arrowWidth=50, location=(0, 0), textColor=2, dimcolor=1, dimexo=0, dimexe=0):
@@ -23,10 +23,10 @@ def draw_dim(msp, points, distance=-120, textHeight=100, arrowWidth=50, location
         return
     elif points[0][0] > points[1][0]:
         dim = msp.add_aligned_dim(p1=(points[1][0], points[1][1]), p2=(points[0][0], points[0][1]),
-                                  override=override, distance=-distance)
+                                  override=override, distance=-distance,dxfattribs = {'layer':'5.NET DIM'})
     else:
         dim = msp.add_aligned_dim(p1=(points[0][0], points[0][1]), p2=(points[1][0], points[1][1]),
-                                  override=override, distance=distance)
+                                  override=override, distance=distance,dxfattribs = {'layer':'5.NET DIM'})
 
     dim.set_text(str(int(calculator.distance(points[0], points[1]))))
     if int(calculator.distance(points[0], points[1])) < 300:
