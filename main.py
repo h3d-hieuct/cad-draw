@@ -6,11 +6,13 @@ import time
 import xml.etree.ElementTree as ET
 import ezdxf
 import requests
+from ezdxf import zoom
 from ezdxf.addons import Importer
 
-from ancuong import parse
-from ancuong.cabinet import Cabinet
-from ancuong.floor import Floor
+import const
+import parse
+from cabinet import Cabinet
+from floor import Floor
 
 logging.getLogger().setLevel(logging.CRITICAL)
 DEFAULT_MAX = -9999999999999999999999999999
@@ -19,6 +21,15 @@ doc = ezdxf.new()
 msp = doc.modelspace()
 msp.units = 7
 doc.styles.new('h3d_style', dxfattribs={'font': 'times.ttf'})
+doc.layers.new(name=const.LAYER_1, dxfattribs={'color': 40})
+doc.layers.new(name=const.LAYER_2, dxfattribs={'color': 6})
+doc.layers.new(name=const.LAYER_3, dxfattribs={'color': 1})
+doc.layers.new(name=const.LAYER_4, dxfattribs={'color': 3})
+doc.layers.new(name=const.LAYER_5, dxfattribs={'color': 252})
+doc.layers.new(name=const.LAYER_6, dxfattribs={'color': 7})
+doc.layers.new(name=const.LAYER_7, dxfattribs={'color': 30})
+doc.layers.new(name=const.LAYER_8, dxfattribs={'color': 251})
+doc.layers.new(name=const.LAYER_9, dxfattribs={'color': 7})
 xml_content = ""
 job_type = ""
 export_id = ""
@@ -42,7 +53,7 @@ def local():
     job_type = "floor"
     job_type = "cabinet"
     xml_content = "https://api.house3d.net/web/data/cad.h3d/202106/07/h3d_cad_1623056892.xml"
-    xml_content = 'as7.xml'
+    xml_content = 'as.xml'
     export_id = "1"
 
 # to debug on local change this value to False
@@ -120,14 +131,14 @@ if job_type == 'cabinet':
         cabinet_importer.import_block(block_name='A$C51AB1ED8')
         cabinet_importer.finalize()
 
-    direction_path = base_path + 'template/direction.dxf'
-    if os.path.isfile(direction_path):
-        direction_f = ezdxf.readfile(direction_path)
-        direction_importer = Importer(direction_f, doc)
-        direction_importer.import_block('direction')
-        direction_importer.finalize()
-    else:
-        print("Cannot find direction template - path: {}".format(direction_path))
+    # direction_path = base_path + 'template/direction.dxf'
+    # if os.path.isfile(direction_path):
+    #     direction_f = ezdxf.readfile(direction_path)
+    #     direction_importer = Importer(direction_f, doc)
+    #     direction_importer.import_block('direction')
+    #     direction_importer.finalize()
+    # else:
+    #     print("Cannot find direction template - path: {}".format(direction_path))
 
 def parse_xml(xml, job):
     if xml.find("http") > -1:
@@ -144,10 +155,15 @@ def parse_xml(xml, job):
         tree = ET.parse(xml)
     if job.find("cabinet") > -1:
         cabinet = tree.findall("CabinetLayout")
+        all_module = tree.findall("CabinetLayout/Part")
+        is_cupboard = False
         for child in cabinet:
             if "type" in child.attrib:
-                parse_data(child, child.attrib['type'])
-                # globals()["parse_" + child.attrib['type'] + "_xml"](child, job)
+                if child.attrib['type'] == 'cupboard':
+                    parse_data(child, 'cupboard' ,all_module)
+                    is_cupboard = True
+        if not is_cupboard:
+            parse_data(None, 'not_cupboard' ,all_module)
     if job.find("floor") > -1:
         parse_wall_data(tree)
 
@@ -175,32 +191,33 @@ def parse_wall_data(tree):
     floor.dim()
     floor.add_room_name()
 
-def parse_data(xml, sub_app):
+def parse_data(xml, sub_app, all_module):
     if sub_app != 'cupboard':
         module_part_list = []
         module_door_list = []
+        module_direction_list = []
         module_info_list = []
         module_model_list = []
-        for module in xml.findall("Part"):
+        for module in all_module:
             if module.attrib['type'] == 'unit':
-                parse.parse_unit(module,module_part_list,module_door_list,module_info_list,module_model_list)
+                parse.parse_unit(module,module_part_list,module_door_list,module_direction_list,module_info_list,module_model_list)
             elif module.attrib['type'] == 'group':
                 for unit in module.findall('Part'):
                     print('------------group--------------')
                     # parse_unit(unit, module_part_list, module_door_list, module_info_list)
-        cabinet = Cabinet(msp,module_part_list,module_door_list,module_info_list,module_model_list)
+        cabinet = Cabinet(msp,0,module_part_list,module_door_list,module_direction_list,module_info_list,module_model_list)
         cabinet.draw_cabinet()
     else:
         stone_data = []
         sections_data = []
         back_path = []
-        if len(xml.findall("Table")):
-            parse.parse_stone(xml.findall("Table")[0],stone_data,sections_data,back_path)
+        if len(xml.findall("TableNew")):
+            parse.parse_stone(xml.findall("TableNew")[0],stone_data,sections_data,back_path)
 
-        modules = xml.findall("Part")
+        modules = all_module
         room_ids = []
         moduleWithID = {}
-        for module in modules:
+        for module in xml.findall("Part"):
             if module.attrib['RoomUID'] not in room_ids and module.attrib['RoomUID'] != "-1":
                 room_ids.append(module.attrib['RoomUID'])
         for roomID in room_ids:
@@ -220,17 +237,18 @@ def parse_data(xml, sub_app):
                     in_wall_data = r.findall("InWallData")
             module_part_list = []
             module_door_list = []
+            module_direction_list = []
             module_info_list = []
             module_model_list = []
             for module in moduleWithID[ids]:
                 if module.attrib['type'] == 'unit':
-                    parse.parse_unit(module, module_part_list, module_door_list, module_info_list, module_model_list)
+                    parse.parse_unit(module, module_part_list, module_door_list,module_direction_list, module_info_list, module_model_list)
                 elif module.attrib['type'] == 'group':
                     for unit in module.findall('Part'):
                         print('------------group--------------')
                         # parse_unit(unit, module_part_list, module_door_list, module_info_list)
             wall_data = [wall, in_wall_data]
-            cabinet = Cabinet(msp, module_part_list, module_door_list, module_info_list, module_model_list,stone_data,sections_data,back_path,doc5,doc6,doc7)
+            cabinet = Cabinet(msp, module_part_list, module_door_list,module_direction_list, module_info_list, module_model_list,stone_data,sections_data,back_path,doc5,doc6,doc7)
             cabinet.draw_cabinet_cupboard(wall_data)
 
 def save_file():
@@ -258,5 +276,6 @@ def upload_file(file_name):
     os.remove(file_name)
 
 parse_xml(xml_content, job_type)
+zoom.extents(msp,1.5)
 file = save_file()
 upload_file(file)

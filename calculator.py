@@ -2,15 +2,22 @@
 import math
 import numpy as np
 
-def rotate_part(part,rotate):
-    result = []
+h = 0
+
+def rotate_part(part,rotate,face_rotate):
+    part_after_rotate = []
     for point in part:
-        if point['type'] == 0:
-            if 'x' in point:
-                result.append({'type':0,'data':re_rotate_XYZ(point['x'],point['y'],point['z'],rotate)})
-            else:
-                result.append({'type':0,'data':rotate_XYZ(point['data'][0], point['data'][1], point['data'][2], rotate)})
-    return result
+        if point['type'] == 1:
+            data = []
+            for p in point['data']:
+                a = re_rotate_XYZ(p['x'], p['y'], p['z'], rotate)
+                data.append(rotate_XYZ(a[0], a[1], a[2], face_rotate))
+            part_after_rotate.append({'type': 1, 'data': data})
+        else:
+            a = re_rotate_XYZ(point['x'], point['y'], point['z'], rotate)
+            part_after_rotate.append(
+                {'type': 0, 'data': rotate_XYZ(a[0], a[1], a[2], face_rotate)})
+    return  part_after_rotate
 
 def rotate_tran(x, y, rotate):
     x1 = round(x * math.cos(rotate / 180 * math.pi) - y * math.sin(rotate / 180 * math.pi), 2)
@@ -66,4 +73,4 @@ def x(num=0,scale=0):
     return 260 * 4 + 297 * num * (scale + 8)
 
 def y(scale=0):
-    return 210 * 4 + scale * 210
+    return 210 * 4 + scale * 210 + h

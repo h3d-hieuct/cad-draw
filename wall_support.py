@@ -1,5 +1,5 @@
 # 2021-10-28 - hieuhihi
-from ancuong import max_min
+import max_min
 
 def get_mm_wall(wall_data,mm):
     min_point_all = [max_min.DEFAULT_MIN, max_min.DEFAULT_MIN, max_min.DEFAULT_MIN]
@@ -106,3 +106,10 @@ def cut_wall(point_data,mm):
                 point_data_after_cut.append(i)
 
     return point_data_after_cut
+
+def check_door(door_data,mm):
+    result = []
+    for door in door_data:
+        if mm[0][0] < float(door['PosX']) < mm[1][0] and mm[0][1] < float(door['PosY']) < mm[1][1]:
+            result.append(door)
+    return result

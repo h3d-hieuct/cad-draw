@@ -3,7 +3,11 @@ from shapely import geometry
 from shapely.algorithms import polylabel
 import math
 
-from ancuong import wall_support, furniture_hardware, max_min, dim
+import const
+import wall_support
+import furniture_hardware
+import max_min
+import dim
 
 class Floor(object):
     def __init__(self,msp,walls,in_wall_data,furniture_data,rooms):
@@ -21,6 +25,7 @@ class Floor(object):
             point_data = wallPointData.attrib['points'].split('|')
             if mm is not None:
                 point_data = wall_support.cut_wall(point_data, mm)
+                in_wall_room = wall_support.check_door(in_wall_room, mm)
             if len(point_data) > 0:
                 point_arr = []
                 in_wall_id = []
@@ -172,10 +177,15 @@ class Floor(object):
                             or y - sin_x_length < point_arr[0][1] < y + sin_x_length
                             or y - sin_x_length > point_arr[0][1] > y + sin_x_length):
                         dim.draw_dim(self.msp, [point_arr[0], point_in_1], distance, dimcolor=color)
-                        self.msp.add_line(point_arr[0], point_in_1, dxfattribs={'color': '7'})
-                        self.msp.add_line(point_in_2, point_arr[3], dxfattribs={'color': '7'})
-                        self.msp.add_line(point_in_1, point_in_2, dxfattribs={'color': '7'})
-                        self.msp.add_line(point_arr[0], point_arr[3], dxfattribs={'color': '7'})
+                        polyline_arr= [point_arr[0],point_arr[3],point_in_2,point_in_1,point_arr[0]]
+                        hatch = self.msp.add_hatch(dxfattribs={'layer': const.LAYER_5})
+                        hatch.paths.add_polyline_path(polyline_arr)
+                        hatch.set_pattern_fill('ANSI32', scale=5, color=250)
+                        self.msp.add_polyline2d(polyline_arr,dxfattribs= {'layer':const.LAYER_2})
+                        # self.msp.add_line(point_arr[0], point_in_1, dxfattribs={'color': '7'})
+                        # self.msp.add_line(point_in_2, point_arr[3], dxfattribs={'color': '7'})
+                        # self.msp.add_line(point_in_1, point_in_2, dxfattribs={'color': '7'})
+                        # self.msp.add_line(point_arr[0], point_arr[3], dxfattribs={'color': '7'})
 
                     x = float(in_wall_id[len(in_wall_id) - 1]['PosX']) + dx
                     y = float(in_wall_id[len(in_wall_id) - 1]['PosY']) + dy
@@ -207,10 +217,15 @@ class Floor(object):
                             or y - sin_x_length < point_arr[1][1] < y + sin_x_length
                             or y - sin_x_length > point_arr[1][1] > y + sin_x_length):
                         dim.draw_dim(self.msp, [point_in_1, point_arr[1]], distance, dimcolor=color)
-                        self.msp.add_line(point_in_1, point_arr[1], dxfattribs={'color': '7'})
-                        self.msp.add_line(point_arr[2], point_in_2, dxfattribs={'color': '7'})
-                        self.msp.add_line(point_in_1, point_in_2, dxfattribs={'color': '7'})
-                        self.msp.add_line(point_arr[1], point_arr[2], dxfattribs={'color': '7'})
+                        polyline_arr = [point_arr[1], point_arr[2], point_in_2, point_in_1, point_arr[1]]
+                        hatch = self.msp.add_hatch(dxfattribs={'layer': const.LAYER_5})
+                        hatch.paths.add_polyline_path(polyline_arr)
+                        hatch.set_pattern_fill('ANSI32', scale=5, color=250)
+                        self.msp.add_polyline2d(polyline_arr, dxfattribs={'layer': const.LAYER_2})
+                        # self.msp.add_line(point_in_1, point_arr[1], dxfattribs={'color': '7'})
+                        # self.msp.add_line(point_arr[2], point_in_2, dxfattribs={'color': '7'})
+                        # self.msp.add_line(point_in_1, point_in_2, dxfattribs={'color': '7'})
+                        # self.msp.add_line(point_arr[1], point_arr[2], dxfattribs={'color': '7'})
 
                     if len(in_wall_id) > 1:
                         for x in range(len(in_wall_id) - 1):
@@ -280,10 +295,15 @@ class Floor(object):
                             self.msp.add_line(point_out_1, point_out_2, dxfattribs={'color': '7'})
                 else:
                     dim.draw_dim(self.msp,[point_arr[0], point_arr[1]], distance, dimcolor=color)
-                    self.msp.add_line(point_arr[0], point_arr[1], dxfattribs={'color': '7'})
-                    self.msp.add_line(point_arr[2], point_arr[3], dxfattribs={'color': '7'})
-                    self.msp.add_line(point_arr[0], point_arr[3], dxfattribs={'color': '7'})
-                    self.msp.add_line(point_arr[1], point_arr[2], dxfattribs={'color': '7'})
+                    polyline_arr = [point_arr[0], point_arr[1], point_arr[2], point_arr[3], point_arr[0]]
+                    hatch = self.msp.add_hatch(dxfattribs={'layer': const.LAYER_5})
+                    hatch.paths.add_polyline_path(polyline_arr)
+                    hatch.set_pattern_fill('ANSI32', scale=5, color=250)
+                    self.msp.add_polyline2d(polyline_arr, dxfattribs={'layer': const.LAYER_2})
+                    # self.msp.add_line(point_arr[0], point_arr[1], dxfattribs={'color': '7'})
+                    # self.msp.add_line(point_arr[2], point_arr[3], dxfattribs={'color': '7'})
+                    # self.msp.add_line(point_arr[0], point_arr[3], dxfattribs={'color': '7'})
+                    # self.msp.add_line(point_arr[1], point_arr[2], dxfattribs={'color': '7'})
 
     def write_furniture(self,doc,category_id,attribute_importer):
         for furniture in self.furniture_data:

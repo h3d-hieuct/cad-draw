@@ -1,6 +1,6 @@
 # 2021-10-28 - hieuhihi
 
-from ancuong import  max_min
+import  max_min
 
 def add_block(msp, doc, block_name, position, furniture_info, is_cabinet=False):
     block_name = str(block_name).lower()
@@ -47,9 +47,9 @@ def add_block(msp, doc, block_name, position, furniture_info, is_cabinet=False):
     h = max_point[1] - min_point[1]
     if is_cabinet:
         msp.add_blockref(block_name, insert=position, dxfattribs={
-            'xscale': float(furniture_info.attrib['W']) / w,
-            'yscale': float(furniture_info.attrib['D']) / h,
-            'rotation': furniture_info.attrib['RZ']})
+            'xscale': float(furniture_info['W']) / w,
+            'yscale': float(furniture_info['D']) / h,
+            'rotation': furniture_info['RZ']})
     else:
         msp.add_blockref(block_name, insert=position, dxfattribs={
             'xscale': float(furniture_info.attrib['Length']) / w,

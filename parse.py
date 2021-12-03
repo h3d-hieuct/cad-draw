@@ -1,7 +1,7 @@
 # 2021-10-28 - hieuhihi
-from ancuong import calculator
+import calculator
 
-def parse_unit(module,module_part_list,module_door_list,module_info_list,module_model_list):
+def parse_unit(module,module_part_list,module_door_list,module_direction_list,module_info_list,module_model_list):
     name = module.attrib['name']
     info = module.find("Values")
     rotate = [float(info.attrib['RX']), float(info.attrib['RY']), float(info.attrib['RZ'])]
@@ -11,11 +11,11 @@ def parse_unit(module,module_part_list,module_door_list,module_info_list,module_
     model_data = []
     for model in model_list:
         if model.attrib['type'] == 'wash_basin':
-            model_data.append({'type':'wash_basin','value':model.findall("Values")[0]})
+            model_data.append({'type':'wash_basin','value':model.findall("Values")[0].attrib})
         if model.attrib['type'] == 'cooking_bench':
-            model_data.append({'type':'cooking_bench','value':model.findall("Values")[0]})
+            model_data.append({'type':'cooking_bench','value':model.findall("Values")[0].attrib})
         if model.attrib['type'] == 'disinfection_cabinet':
-            model_data.append({'type':'disinfection_cabinet','value':model.findall("Values")[0]})
+            model_data.append({'type':'disinfection_cabinet','value':model.findall("Values")[0].attrib})
     material_list = parse_material(parts)
     accessory_list = parse_accessory(parts, module.findall("Accessories/Accessory"))
     module_info = {"name": name, "info": info, "rotate": rotate, "ele": elevation,
@@ -25,10 +25,12 @@ def parse_unit(module,module_part_list,module_door_list,module_info_list,module_
                    'accessory_list': accessory_list}
     part_data = []
     doors_data = []
+    direction = []
     for part in parts:
-        parse_part_and_door(part_data, doors_data, part, None, rotate)
+        parse_part_and_door(part_data, doors_data, model_data, direction, part, None, rotate)
     module_part_list.append(part_data)
     module_door_list.append(doors_data)
+    module_direction_list.append(direction)
     module_info_list.append(module_info)
     module_model_list.append(model_data)
 
@@ -122,26 +124,42 @@ def parse_material_functor(parts,material_cabinet,material_door_functor):
         if part.attrib['type'] == "functor":
             parse_material_functor(part,material_cabinet,material_door_functor)
 
-def parse_part_and_door(part_data,doors_data,part,functor_rotate=None,module_rotate=None):
+def parse_part_and_door(part_data,doors_data,model_data,direction,part,functor_rotate=None,module_rotate=None):
     if part.attrib['type'] == "functor" or part.attrib['partNumber'] == 'TN_NHOM':
+        values = part.findall("Values")[0].attrib
+        rotate = [float(values['RX']), float(values['RY']), float(values['RZ'])]
         for part_child in part.findall("Part"):
-            values = part.findall("Values")[0].attrib
-            rotate = [float(values['RX']), float(values['RY']), float(values['RZ'])]
-            parse_part_and_door(part_data,doors_data,part_child,rotate,module_rotate)
+            parse_part_and_door(part_data,doors_data,[],direction,part_child,rotate,module_rotate)
+        for model in part.findall("Model"):
+            if model.attrib['type'] == "hardware":
+                model_data.append({'type':'hardware',
+                    'value':{'W':model.findall("Values")[0].attrib['W'],
+                            'H':model.findall("Values")[0].attrib['H'],
+                            'D':model.findall("Values")[0].attrib['D'],
+                            'PX':float(model.findall("Values")[0].attrib['PX'])+float(values['PX']),
+                            'PY':float(model.findall("Values")[0].attrib['PY'])+float(values['PY']),
+                            'PZ':float(model.findall("Values")[0].attrib['PZ'])+float(values['PZ']),
+                            'RX':model.findall("Values")[0].attrib['RX'],
+                            'RY':model.findall("Values")[0].attrib['RY'],
+                            'RZ':float(model.findall("Values")[0].attrib['RZ'])+float(values['RZ'])}})
     else:
         p = parse_part(part, functor_rotate, module_rotate)
         inner_p = parse_part(part, functor_rotate, module_rotate, True)
         d = parse_door(part,functor_rotate, module_rotate)
-        if len(p) > 0:
-            part_data.append(p)
-        if len(inner_p) > 0:
-            part_data.append(inner_p)
+        if len(p[0]) > 0:
+            part_data.append(p[0])
+            direction.append(p[1])
+        if len(inner_p[0]) > 0:
+            part_data.append(inner_p[0])
+            direction.append(inner_p[1])
         if len(d) > 0:
             doors_data.append(d)
 
 def parse_part(part,functor_rotate,module_rotate,inner=False):
     result = []
     values = {}
+    direction = []
+    a = b = False
     part_rotate = None
     if part.attrib['type'] == "cabinet_board":
         if inner:
@@ -150,6 +168,9 @@ def parse_part(part,functor_rotate,module_rotate,inner=False):
             face_board_global_p = part.findall("FaceBoard/faceBoardGlobalP/globalP")
         if len(part.findall("Values")) > 0:
             values = part.findall("Values")[0].attrib
+            # False ko xoay , van ngang
+            a = part.attrib['grainDirection'] == 'vertical'
+            b = part.attrib['sideGrainDirection'] == 'vertical'
         if len(face_board_global_p) == 0 :
             if inner:
                 face_board_global_p = part.findall("Part/FaceBoard/InnerBorderLines/LineGlobleP/globalP")
@@ -158,8 +179,18 @@ def parse_part(part,functor_rotate,module_rotate,inner=False):
             part_rotate = [float(values['RX']), float(values['RY']), float(values['RZ'])]
             if len(part.findall("Part/Values")) > 0:
                 values = part.findall("Part/Values")[0].attrib
+                a = part.findall("Part")[0].attrib['grainDirection'] == 'vertical'
+                b = part.findall("Part")[0].attrib['sideGrainDirection'] == 'vertical'
         result = parse_core(face_board_global_p, values,part_rotate, functor_rotate, module_rotate)
-    return result
+
+        direction = [a, b, b]
+        rotate = [float(values['RX']), float(values['RY']), float(values['RZ'])]
+        direction = parse_direction(direction, rotate)
+        if not part_rotate is None:
+            direction = parse_direction(direction, part_rotate)
+        if not functor_rotate is None:
+            direction = parse_direction(direction, functor_rotate)
+    return [result,direction]
 
 def parse_door(part,functor_rotate, module_rotate):
     result = []
@@ -179,7 +210,17 @@ def parse_door(part,functor_rotate, module_rotate):
                     info = p.attrib
                     for p1 in p.findall("Part"):
                         face_board_global_p = p1.findall("FaceBoard/faceBoardGlobalP/globalP")
-                        result.append({"data":parse_core(face_board_global_p,values,part_rotate,functor_rotate,module_rotate),"info":info})
+                        a = p1.attrib['grainDirection'] == 'vertical'
+                        b = p1.attrib['sideGrainDirection'] == 'vertical'
+                        direction = [a, b, b]
+                        rotate = [float(values['RX']), float(values['RY']), float(values['RZ'])]
+                        direction = parse_direction(direction, rotate)
+                        if not part_rotate is None:
+                            direction = parse_direction(direction, part_rotate)
+                        if not functor_rotate is None:
+                            direction = parse_direction(direction, functor_rotate)
+                        result.append({"data":parse_core(face_board_global_p,values,part_rotate,functor_rotate,module_rotate)
+                                ,"info":info,"direction":direction})
                 else:
                     if len(p.findall("Part/Part/Part/Values")) > 0:
                         values = p.findall("Part/Part/Part/Values")[0].attrib
@@ -188,13 +229,33 @@ def parse_door(part,functor_rotate, module_rotate):
                             info = p.attrib
                             for p3 in p2.findall("Part"):
                                 face_board_global_p = p3.findall("FaceBoard/faceBoardGlobalP/globalP")
-                                result.append({"data":parse_core(face_board_global_p,values,part_rotate,functor_rotate,module_rotate),"info":info})
+                                a = p3.attrib['grainDirection'] == 'vertical'
+                                b = p3.attrib['sideGrainDirection'] == 'vertical'
+                                direction = [a, b, b]
+                                rotate = [float(values['RX']), float(values['RY']), float(values['RZ'])]
+                                direction = parse_direction(direction, rotate)
+                                if not part_rotate is None:
+                                    direction = parse_direction(direction, part_rotate)
+                                if not functor_rotate is None:
+                                    direction = parse_direction(direction, functor_rotate)
+                                result.append({"data":parse_core(face_board_global_p,values,part_rotate,functor_rotate,module_rotate)
+                                        ,"info":info,"direction":direction})
             else:
                 for p1 in p.findall("Part"):
                     info = p.attrib
                     for p2 in p1.findall("Part"):
                         face_board_global_p = p2.findall("FaceBoard/faceBoardGlobalP/globalP")
-                        result.append({"data":parse_core(face_board_global_p,values,part_rotate,functor_rotate,module_rotate),"info":info})
+                        a = p2.attrib['grainDirection'] == 'vertical'
+                        b = p2.attrib['sideGrainDirection'] == 'vertical'
+                        direction = [a, b, b]
+                        rotate = [float(values['RX']), float(values['RY']), float(values['RZ'])]
+                        direction = parse_direction(direction, rotate)
+                        if not part_rotate is None:
+                            direction = parse_direction(direction, part_rotate)
+                        if not functor_rotate is None:
+                            direction = parse_direction(direction, functor_rotate)
+                        result.append({"data":parse_core(face_board_global_p,values,part_rotate,functor_rotate,module_rotate)
+                                ,"info":info,"direction":direction})
     return result
 
 def parse_core(face_board_global_p,values,part_rotate,functor_rotate,module_rotate):
@@ -239,6 +300,15 @@ def parse_core(face_board_global_p,values,part_rotate,functor_rotate,module_rota
         else:
             result.append({"x": x, "y": y, "z": z, 'type': 0})
     return result
+
+def parse_direction(direction,rotate):
+    if rotate[0] == 90 or rotate[0] == 270 or rotate[0] == -90 or rotate[0] == -270:
+        direction = [direction[1],direction[0],not direction[2]]
+    if rotate[1] == 90 or rotate[1] == 270 or rotate[1] == -90 or rotate[1] == -270:
+        direction = [not direction[2],not direction[1],not direction[0]]
+    if rotate[2] == 90 or rotate[2] == 270 or rotate[2] == -90 or rotate[2] == -270:
+        direction = [not direction[0],direction[2],direction[1]]
+    return direction
 
 def parse_stone(xml,stone_data,sections_data,back_path):
     z = float(xml.attrib['groundHeightValue'])
